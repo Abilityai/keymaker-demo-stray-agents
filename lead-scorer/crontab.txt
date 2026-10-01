@@ -1,0 +1,2 @@
+# runs daily at 06:00
+0 6 * * * cd /opt/lead-scorer && python3 score_leads.py

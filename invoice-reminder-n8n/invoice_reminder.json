@@ -1,0 +1,15 @@
+{
+  "name": "Invoice reminder",
+  "nodes": [
+    {"parameters": {"rule": {"interval": [{"field": "days", "daysInterval": 1}]}}, "name": "Every morning", "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.1, "position": [0, 0]},
+    {"parameters": {"documentId": "SHEET_ID", "sheetName": "Invoices"}, "name": "Read invoices", "type": "n8n-nodes-base.googleSheets", "typeVersion": 4, "position": [220, 0]},
+    {"parameters": {"conditions": {"string": [{"value1": "={{$json.status}}", "operation": "equal", "value2": "overdue"}]}}, "name": "Overdue?", "type": "n8n-nodes-base.if", "typeVersion": 1, "position": [440, 0]},
+    {"parameters": {"fromEmail": "billing@example.com", "toEmail": "={{$json.client_email}}", "subject": "Invoice {{$json.number}} is overdue", "text": "Hi {{$json.client_name}}, invoice {{$json.number}} for {{$json.amount}} was due on {{$json.due}}."}, "name": "Send reminder", "type": "n8n-nodes-base.emailSend", "typeVersion": 2, "position": [660, -100]}
+  ],
+  "connections": {
+    "Every morning": {"main": [[{"node": "Read invoices", "type": "main", "index": 0}]]},
+    "Read invoices": {"main": [[{"node": "Overdue?", "type": "main", "index": 0}]]},
+    "Overdue?": {"main": [[{"node": "Send reminder", "type": "main", "index": 0}], []]}
+  },
+  "active": false
+}
